@@ -196,26 +196,4 @@ def printCoin(buy, sale):
     return 'Курс покупки - ' + str(buy) + '\nКурс продажи - ' + str(sale)
 
 
-
-
-# def get_icons():
-#     array_anekdots = []
-#     req_anek = requests.get('https://vk.com/im?sel=178941779&v=')
-#     soup = bs4.BeautifulSoup(req_anek.text, 'html.parser')
-#     result_find = soup.findAll('im-mess--text wall_module _im_log_body')
-#     for result in result_find:
-#         array_anekdots.append(result.getText().strip())
-#     return array_anekdots[0]
-
-# def get_icon():
-#     array_icons = []
-#     req_icon = requests.get('https://www.pinterest.ru/iriska332455/icons/')
-#     soup = bs4.BeautifulSoup(req_icon.content)
-#     result_f = soup.select('img', class_='hCL kVc L4E MIw')
-#     for result in result_f:
-#         lnk = result['src']
-#         with open( basename(lnk), " wb") as array_icons:
-#             array_icons.append(requests.get(lnk).content)
-#     return array_icons[0]
-
 bot.polling(none_stop=True, interval=0)
