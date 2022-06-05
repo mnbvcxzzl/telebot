@@ -13,7 +13,7 @@ import DZ  # домашнее задание от первого урока
 from voice import get_mp3_file  #для перевода текста в аудио
 from parser import get_article_language #для перевода текста в аудио
 import os
-import time
+import random
 
 bot = telebot.TeleBot('5571270108:AAFx75xdYqi7haRhNpNcwMKT0WVjbfC7kjk')  # Создаем экземпляр бота
 game21 = None  # класс игры в 21, экземпляр создаём только при начале игры
@@ -46,10 +46,13 @@ def get_text_messages(message):
             send_help(chat_id)
 
         elif ms_text == "Прислать котика":
-            contents = requests.get('https://aws.random.cat/meow').json()
-            urlCAT = contents['file']
-            time.sleep(5)
-            bot.send_photo(chat_id, photo=urlCAT, caption='Получай! (´• ω •)ノ～♡')
+            try:
+                contents = requests.get("https://aws.random.cat/meow").json()
+                urlCAT = contents['file']
+            except:
+                bot.send_message(chat_id, text="Не удалось получить изображение, попробуй еще раз! :(")
+            else:
+                bot.send_photo(chat_id, photo=urlCAT, caption='Получай! (´• ω •)ノ～♡')
 
         elif ms_text == "Прислать анекдот":
             bot.send_message(chat_id, text=get_anekdot())
@@ -258,12 +261,15 @@ def voice_msg(chat_id, message):
         else:
             bot.send_message(message.from_user.id, f"Язык текста определён как: {article_language[0]}.")
             bot.send_message(message.from_user.id, "Отправляю аудиофайл...")
-            file_name = 'audiofile.mp3'
-            get_mp3_file(file_name, article_text, article_language[1])
-            time.sleep(10)
-            audio_file = open('audiofile.mp3', 'rb')
-            bot.send_audio(chat_id, audio=audio_file)
-            os.remove(file_name)
+            try:
+                file_name = 'audiofile.mp3'
+                get_mp3_file(file_name, article_text, article_language[1])
+                audio_file = open('audiofile.mp3', 'rb')
+            except:
+                bot.send_message(message.from_user.id, "Извините, возникла ошибка. В скором времени автор её устранит :)")
+            else:
+                bot.send_audio(chat_id, audio_file)
+                os.remove(file_name)
 
     bot.register_next_step_handler(message, forward_message)
 
@@ -273,32 +279,3 @@ bot.polling(none_stop=True, interval=0)  # Запускаем бота
 
 print()
 
-
-
-# var token = '5261138323:AAG_66FwSIwVOLk0BRkZGI95RxzzY-OdnRY';
-# var telegramUrl = 'https://api.telegram.org/bot' + token;
-# var webAppUrl = 'https://script.google.com/macros/s/AKfycbzdIarwD9lbxE6W6-1kwGvqmA22J_D4ggPbDfiJCSmdwQupfSY2FhMmpO-w6JNd_2CG/exec'
-#
-# function getMe() {
-#   var url = telegramUrl + '/getMe';
-#   var response = UrlFetchApp.fetch(url);
-#   Logger.log(response.getContentText());
-# }
-#
-# function setWebhook() {
-#   var url = telegramUrl + '/setWebhook?url=' + webAppUrl;
-#   var response = UrlFetchApp.fetch(url);
-#   Logger.log(response.getContentText());
-# }
-#
-# function doGet(e) {
-#   return HtmlService.createHtmlOutput('Hi there!');
-# }
-#
-# function doPost(e) {
-#   GmailApp.sendEmail(Session.getEffectiveUser().getEmail(), 'Message sent to bot', JSON.stringify(e,null,4));
-# }
-
-
-#5261138323:AAG_66FwSIwVOLk0BRkZGI95RxzzY-OdnRY
-#https://script.google.com/macros/s/AKfycbwJZafbclIYoSq4bCGSvrPmQfJvekrJK8LK4d1KHbC4Y64NCJn13lRxc7jVeA-NxaNj/exec
